@@ -4,14 +4,16 @@
 
  Il programma:
  1. modella le attività con un grafo orientato (Digraph);
- 2. calcola un ordine con gradi entranti e coda FIFO (TopologicalKahn);
+ 2. calcola un ordine con gradi entranti e coda FIFO (TopologicalOrder);
  3. rileva un ciclo se l'ordine contiene meno di V attivita';
- 4. se esiste un ciclo, segnala che la pianificazione completa e' impossibile.
+ 4. se esiste un ciclo, lo ricostruisce con DFS e segnala la pianificazione impossibile.
  */
 
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
+import java.util.Stack;
+import java.util.NoSuchElementException;
 
 public class Main {
     private static String[] nomi;
@@ -22,7 +24,7 @@ public class Main {
         
         try {
             G = leggiGrafo(scanner);
-        } catch (Error e) {
+        } catch (IllegalArgumentException | NoSuchElementException e) {
             String input = e.getMessage();
             if (input == null) {
                 input = "dati mancanti";
@@ -41,7 +43,17 @@ public class Main {
             stampa(pianificazione.order());
             System.out.println("Pianificazione valida.");
         } else {
-            System.out.println("Cliclo rilevato.");
+            DirectedCycle controllo = new DirectedCycle(G);
+            Stack<Integer> ciclo = controllo.cycle();
+            System.out.print("Ciclo rilevato: ");
+            // Stack si legge dalla cima per seguire gli archi del ciclo.
+            for (int i = ciclo.size() - 1; i >= 0; i--) {
+                System.out.print(nomi[ciclo.get(i)]);
+                if (i > 0) {
+                    System.out.print(" -> ");
+                }
+            }
+            System.out.println();
             System.out.println("Pianificazione non valida: non e' possibile eseguire tutte le attivita'.");
         }
     }
@@ -96,8 +108,11 @@ public class Main {
 
     // Stampa le attivita' nell'ordine prodotto.
     private static void stampa(List<Integer> vertici) {
+        if (vertici.isEmpty()) {
+            System.out.print("(nessuna)");
+        }
         for (int v : vertici) {
-            System.out.print(nomi[v]);
+            System.out.print(nomi[v] + " ");
         }
         System.out.println();
     }
