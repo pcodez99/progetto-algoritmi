@@ -12,7 +12,6 @@
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class Main {
     private static String[] nomi;
@@ -23,7 +22,7 @@ public class Main {
         
         try {
             G = leggiGrafo(scanner);
-        } catch (IllegalArgumentException | NoSuchElementException e) {
+        } catch (Error e) {
             String input = e.getMessage();
             if (input == null) {
                 input = "dati mancanti";

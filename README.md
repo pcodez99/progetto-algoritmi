@@ -15,5 +15,4 @@ e l’impossibilità di pianificare tutte le attività. Non ricostruisce il cicl
 Le classi `DirectedCycle` e `DepthFirstOrder` della prima soluzione DFS
 restano disponibili per il confronto, ma non vengono chiamate da `Main`.
 La versione DFS iniziale è nel commit `82b9531` sul ramo `main`.
-Gli input di esempio sono in `test/`; non è presente uno script di test.
-Relazione HTML e PDF locali sono esclusi dalla repository e ancora da aggiornare.
+Gli input di esempio sono in `test/`;
