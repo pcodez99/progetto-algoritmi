@@ -1,0 +1,10 @@
+8 8
+Prog1 Prog2 Analisi1 Analisi2 Algoritmi Reti BasiDati Inglese
+Prog1 Prog2
+Prog2 Algoritmi
+Analisi1 Analisi2
+Analisi1 Algoritmi
+Prog2 BasiDati
+Algoritmi Reti
+Prog1 Reti
+Analisi2 Reti
