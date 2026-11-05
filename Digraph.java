@@ -1,9 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- Grafo orientato implementazione con array delle liste di adiacenza
- */
+//Grafo orientato implementazione con array delle liste di adiacenza
+
 public class Digraph {
     private final int V;
     private final List<Integer>[] adj;
