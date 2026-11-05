@@ -4,15 +4,15 @@
 
  Il programma:
  1. modella le attivita' con un grafo orientato (Digraph);
- 2. rileva un'eventuale dipendenza circolare con DFS (DirectedCycle);
- 3. se il grafo e' un DAG, calcola il reverse postorder (DepthFirstOrder);
+ 2. calcola un ordine con gradi entranti e coda FIFO (TopologicalKahn);
+ 3. rileva un ciclo se l'ordine contiene meno di V attivita';
  4. se esiste un ciclo, segnala che la pianificazione completa e' impossibile.
  */
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Stack;
+import java.util.List;
 
 public class Main {
     private static String[] nomi;
@@ -35,19 +35,17 @@ public class Main {
         }
         scanner.close();
 
-        DirectedCycle controlloCicli = new DirectedCycle(G);
+        TopologicalKahn pianificazione = new TopologicalKahn(G);
 
-        if (!controlloCicli.hasCycle()) {
-            DepthFirstOrder dfs = new DepthFirstOrder(G);
-            System.out.println("Ordine di esecuzione possibile:");
-            stampa(dfs.reversePost(), " ");
-            if (!rispettaDipendenze(G, dfs.reversePost())) {
+        if (pianificazione.isComplete()) {
+            if (!rispettaDipendenze(G, pianificazione.order())) {
                 throw new IllegalStateException("Ordine prodotto non valido");
             }
+            System.out.println("Ordine di esecuzione possibile:");
+            stampa(pianificazione.order());
             System.out.println("Pianificazione valida.");
         } else {
-            System.out.print("Dipendenza circolare rilevata: ");
-            stampa(controlloCicli.cycle(), " -> ");
+            System.out.println("Dipendenza circolare rilevata.");
             System.out.println("Pianificazione non valida: non e' possibile eseguire tutte le attivita'.");
         }
     }
@@ -102,11 +100,10 @@ public class Main {
     }
 
     // Verifica che per ogni arco v -> w, v preceda w nell'ordine. Tempo O(V + E).
-    private static boolean rispettaDipendenze(Digraph G, Stack<Integer> ordine) {
+    private static boolean rispettaDipendenze(Digraph G, List<Integer> ordine) {
         int[] pos = new int[G.V()];
         int i = 0;
-        for (int j = ordine.size() - 1; j >= 0; j--) {
-            int v = ordine.get(j);
+        for (int v : ordine) {
             pos[v] = i;
             i++;
         }
@@ -123,14 +120,12 @@ public class Main {
         return true;
     }
 
-    // Stampa i nomi separati da uno spazio oppure da una freccia.
-    private static void stampa(Stack<Integer> vertici, String separatore) {
+    // Stampa le attivita' nell'ordine prodotto.
+    private static void stampa(List<Integer> vertici) {
         boolean primo = true;
-        // Stack si legge dalla cima: il for-each partirebbe dal fondo.
-        for (int i = vertici.size() - 1; i >= 0; i--) {
-            int v = vertici.get(i);
+        for (int v : vertici) {
             if (!primo) {
-                System.out.print(separatore);
+                System.out.print(" ");
             }
             System.out.print(nomi[v]);
             primo = false;
